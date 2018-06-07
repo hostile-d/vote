@@ -1,17 +1,16 @@
-var React = require('react');
-var ReactDOM = require('react-dom');
-var Rebase = require('re-base');
-var List = require('./List');
-var AddItem = require('./AddItem');
-var Button = require('./Button');
-var base = require('./rebase');
+import React from 'react';
+import Rebase from 're-base';
+import Button from './Button';
+import base from './rebase';
 
-class App extends React.Component {
+
+export default class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       votes: [],
-      loading: true
+      loading: true,
+      disabledButtons: false
     };
   }
   componentDidMount() {
@@ -22,9 +21,7 @@ class App extends React.Component {
       state: 'votes',
       then() {
         this.setState({ 
-          loading: false,
-          disabledButtons: false,
-          votes: [0,0]
+          loading: false
         });
       }
     });
@@ -62,5 +59,3 @@ class App extends React.Component {
     );
   }
 }
-
-ReactDOM.render(<App />, document.getElementById('app'));
