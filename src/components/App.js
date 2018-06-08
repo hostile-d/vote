@@ -1,6 +1,7 @@
 import React from 'react';
 import Button from './Button';
 import base from './../db';
+import deepKeys from 'deep-keys';
 
 
 export default class App extends React.Component {
@@ -85,9 +86,25 @@ export default class App extends React.Component {
         playerScores
       });
     }
+    this.toggleButtons();
+  }
+  toggleButtons() {
+    const allKeys = deepKeys(this.state.room);
+    const string = allKeys.join('');
+    const regexp = new RegExp(`${this.state.voterId}`)
+    if(string.match(regexp)) {
+      this.setState({
+        disabledButtons: true
+      });
+    }
   }
   handleVote(key) {
+    const room = {...this.state.room}
+    const player = this.state.playerNames[key];
+    const id = this.state.voterId;
+    room[player][id] = true;
     this.setState({
+      room: room,
       disabledButtons: true
     });
   }
