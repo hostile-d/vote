@@ -10,8 +10,9 @@ export default class App extends React.Component {
     this.state = {
       voterId:'',
       loading: true,
-      disabledButtons: false,
+      disabledButtons: true,
       roomName: '',
+      roomKey: '',
       room: "",
       playerNames: {
         player0: '',
@@ -48,9 +49,19 @@ export default class App extends React.Component {
       context: this,
       state: 'playerNames',
       then() {
+        this.getRoomKey();
+      }
+    });
+  }
+  getRoomKey() {
+    base.syncState('settings/roomKey', {
+      context: this,
+      state: 'roomKey',
+      then() {
         this.getRoomName();
       }
     });
+    
   }
   getRoomName() {
     const p1 = this.state.playerNames.player0;
@@ -62,7 +73,7 @@ export default class App extends React.Component {
     this.getRoom();
   }
   getRoom(){
-    const endpoint = `rooms/${this.state.roomName}`;
+    const endpoint = `rooms/${this.state.roomKey}/${this.state.roomName}`;
     this.ref = base.syncState(endpoint, {
       context: this,
       state: 'room',
@@ -96,6 +107,10 @@ export default class App extends React.Component {
       this.setState({
         disabledButtons: true
       });
+    } else {
+      this.setState({
+        disabledButtons: false
+      });
     }
   }
   handleVote(key) {
@@ -128,6 +143,7 @@ export default class App extends React.Component {
               index={index}
               handleVote={this.handleVote.bind(this, key)}
               disabled={this.state.disabledButtons}
+              playerName={this.state.playerNames[key]}
             />
           ))}
       </div>

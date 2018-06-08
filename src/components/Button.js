@@ -8,7 +8,7 @@ export default class Button extends React.Component {
         onClick={this.props.handleVote}
         disabled={this.props.disabled}
       >
-      {'Player ' + this.props.index}
+      {this.props.playerName}
       </button>
     );
   }

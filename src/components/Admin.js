@@ -6,7 +6,8 @@ export default class Admin extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      room: '',
+      roomName: '',
+      roomKey: '',
       playerNames: {
         player0: '',
         player1: ''
@@ -14,9 +15,13 @@ export default class Admin extends React.Component {
     };
   }
   componentDidMount() {
-    this.ref = base.syncState('settings/room', {
+    this.ref = base.syncState('settings/roomName', {
       context: this,
-      state: 'room'
+      state: 'roomName'
+    });
+    this.ref = base.syncState('settings/roomKey', {
+      context: this,
+      state: 'roomKey'
     });
     this.ref = base.syncState('settings/playerNames', {
       context: this,
@@ -30,10 +35,22 @@ export default class Admin extends React.Component {
     e.preventDefault();
     const p1 = this.state.playerNames.player0;
     const p2 = this.state.playerNames.player1;
-    const room = `${p1}-${p2}`;
+    const roomName = `${p1}-${p2}`;
     this.setState({
-      room
+      roomName
     });
+    base.push('rooms', {
+      data: {
+        [roomName]: {
+          [this.state.playerNames.player0]: true,
+          [this.state.playerNames.player1]: true
+        }
+      }
+    }).then(newLocation => {
+      this.setState({
+        roomKey: newLocation.key
+      })
+    })
   }
   handleChange = (key,e) => {
     const playerNames = {...this.state.playerNames};
@@ -45,8 +62,8 @@ export default class Admin extends React.Component {
   render() {
     return (
       <div>
-        <h3>{`Current Room is ${this.state.room}, create new one?`}</h3>
-        <form onSubmit={this.handleSubmit}>
+        <h3>{`Current Room is ${this.state.roomName}, create new one?`}</h3>
+        <form onSubmit={this.handleSubmit.bind(this)}>
           {Object.keys(this.state.playerNames).map((key, index) => (
             <Input
               key={key}
