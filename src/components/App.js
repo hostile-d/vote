@@ -14,12 +14,11 @@ export default class App extends React.Component {
     };
   }
   componentDidMount() {
-    this.getVotes();
-    // this.getRoom().then(console.log('resolved'));
+    this.getRoom();
   }
 
-  async getRoom() { 
-    await base.bindToState('settings', {
+  getRoom() { 
+    base.bindToState('settings/room', {
       context: this,
       state: 'room',
       then() {
@@ -29,7 +28,8 @@ export default class App extends React.Component {
   }
 
   getVotes(){
-    this.ref = base.syncState(`danil-sergey/votes`, {
+    const endpoint = `${this.state.room}/votes`;
+    this.ref = base.syncState(endpoint, {
       context: this,
       asArray: true,
       state: 'votes',
