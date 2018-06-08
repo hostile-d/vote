@@ -83,6 +83,7 @@ export default class App extends React.Component {
         });
         this.calcVotes();
         this.toggleButtons();
+        this.pingDb();
       }
     });
   }
@@ -127,6 +128,17 @@ export default class App extends React.Component {
       disabledButtons: true
     });
     this.calcVotes();
+  }
+
+  pingDb() {
+    setInterval(() => {
+      base.fetch('settings/roomKey', {
+        context: this,
+        then(data){
+          if(this.state.roomKey !== data) window.location = '/';
+        }
+      })
+    }, 2000)
   }
   // componentWillUnmount() {
   //   base.removeBinding(this.ref);
