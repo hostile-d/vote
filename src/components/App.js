@@ -63,13 +63,13 @@ export default class App extends React.Component {
                 <div>{this.state.votes[1]}</div>
               </div>}
           {Object.keys(this.state.votes).map((key, index) => (
-                <Button
-                    key={key}
-                    index={index}
-                    handleVote={this.handleVote.bind(this, index)}
-                    disabled={this.state.disabledButtons}
-                />
-            ))}
+            <Button
+              key={key}
+              index={index}
+              handleVote={this.handleVote.bind(this, index)}
+              disabled={this.state.disabledButtons}
+            />
+          ))}
       </div>
     );
   }
