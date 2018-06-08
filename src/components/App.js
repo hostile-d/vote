@@ -1,7 +1,6 @@
 import React from 'react';
-import Rebase from 're-base';
 import Button from './Button';
-import base from './rebase';
+import base from './../db';
 
 
 export default class App extends React.Component {
@@ -10,12 +9,27 @@ export default class App extends React.Component {
     this.state = {
       votes: [],
       loading: true,
-      disabledButtons: false
+      disabledButtons: false,
+      room: ""
     };
   }
   componentDidMount() {
-    console.log(this.state.votes);
-    this.ref = base.syncState('game1/votes', {
+    this.getVotes();
+    // this.getRoom().then(console.log('resolved'));
+  }
+
+  async getRoom() { 
+    await base.bindToState('settings', {
+      context: this,
+      state: 'room',
+      then() {
+        this.getVotes();
+      }
+    });
+  }
+
+  getVotes(){
+    this.ref = base.syncState(`danil-sergey/votes`, {
       context: this,
       asArray: true,
       state: 'votes',
@@ -26,6 +40,7 @@ export default class App extends React.Component {
       }
     });
   }
+
   componentWillUnmount() {
     base.removeBinding(this.ref);
   }
