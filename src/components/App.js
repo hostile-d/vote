@@ -18,7 +18,7 @@ export default class App extends React.Component {
   }
 
   getRoom() { 
-    base.bindToState('settings/room', {
+    base.syncState('settings/room', {
       context: this,
       state: 'room',
       then() {

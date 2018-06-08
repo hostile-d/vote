@@ -7,7 +7,10 @@ export default class Admin extends React.Component {
     super(props);
     this.state = {
       room: '',
-      playerNames: ['','']
+      playerNames: {
+        player0: '',
+        player1: ''
+      }
     };
   }
   componentDidMount() {
@@ -15,21 +18,26 @@ export default class Admin extends React.Component {
       context: this,
       state: 'room'
     });
+    this.ref = base.syncState('settings/playerNames', {
+      context: this,
+      state: 'playerNames'
+    });
   }
   componentWillUnmount() {
     base.removeBinding(this.ref);
   }
   handleSubmit = (e) => {
     e.preventDefault();
-    const room = this.state.playerNames.join('-');
+    const p1 = this.state.playerNames.player0;
+    const p2 = this.state.playerNames.player1;
+    const room = `${p1}-${p2}`;
     this.setState({
       room
     });
   }
-  
-  handleChange = (index,e) => {
-    const playerNames = [...this.state.playerNames];
-    playerNames[index] = e.target.value
+  handleChange = (key,e) => {
+    const playerNames = {...this.state.playerNames};
+    playerNames[key] = e.target.value
     this.setState({
       playerNames
     });
@@ -43,7 +51,7 @@ export default class Admin extends React.Component {
             <Input
               key={key}
               index={index}
-              handleChange={this.handleChange.bind(this, index)}
+              handleChange={this.handleChange.bind(this, key)}
             />
           ))}
           <input type="submit" value="Submit" />
