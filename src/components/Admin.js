@@ -42,8 +42,12 @@ export default class Admin extends React.Component {
     base.push('rooms', {
       data: {
         [roomName]: {
-          [this.state.playerNames.player0]: true,
-          [this.state.playerNames.player1]: true
+          [this.state.playerNames.player0]: {
+            initVote: false
+          },
+          [this.state.playerNames.player1]: {
+            initVote: false
+          }
         }
       }
     }).then(newLocation => {

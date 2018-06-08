@@ -82,6 +82,7 @@ export default class App extends React.Component {
           loading: false
         });
         this.calcVotes();
+        this.toggleButtons();
       }
     });
   }
@@ -90,14 +91,17 @@ export default class App extends React.Component {
     const length = Object.keys(state.playerNames).length;
     for (let i = 0; i < length; i++) {
       const player = 'player' + i;
-      const score = Object.keys(state.room[state.playerNames[player]]).length;
+      const votes = state.room[state.playerNames[player]];
+      let score = Object.keys(votes).length;
+      for(let key in votes) {
+        if (key === 'initVote') score--;
+      }
       const playerScores = {...this.state.playerScores};
       playerScores[player] = score;
       this.setState({
         playerScores
       });
     }
-    this.toggleButtons();
   }
   toggleButtons() {
     const allKeys = deepKeys(this.state.room);
@@ -122,6 +126,7 @@ export default class App extends React.Component {
       room: room,
       disabledButtons: true
     });
+    this.calcVotes();
   }
   // componentWillUnmount() {
   //   base.removeBinding(this.ref);
