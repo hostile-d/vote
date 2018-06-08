@@ -7,51 +7,93 @@ export default class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      votes: [],
+      voterId:'',
       loading: true,
       disabledButtons: false,
-      room: ""
+      roomName: '',
+      room: "",
+      playerNames: {
+        player0: '',
+        player1: ''
+      },
+      playerScores: {
+        player0: 0,
+        player1: 0
+      }
     };
   }
   componentDidMount() {
-    this.getRoom();
+    this.setId();
+    this.getSettings();
   }
+  setId() {
+    let voterId = localStorage.getItem('voterId');
+    if(voterId) {
+      this.setState({
+        voterId
+      })
+    } else {
+      const newId = Date.now();
+      localStorage.setItem('voterId', newId)
+      voterId = newId;
 
-  getRoom() { 
-    base.syncState('settings/room', {
+      this.setState({
+        voterId
+      })
+    }
+  }
+  getSettings() { 
+    base.syncState('settings/playerNames', {
       context: this,
-      state: 'room',
+      state: 'playerNames',
       then() {
-        this.getVotes();
+        this.getRoomName();
       }
     });
   }
-
-  getVotes(){
-    const endpoint = `${this.state.room}/votes`;
+  getRoomName() {
+    const p1 = this.state.playerNames.player0;
+    const p2 = this.state.playerNames.player1;
+    const roomName = `${p1}-${p2}`;
+    this.setState({
+      roomName
+    });
+    this.getRoom();
+  }
+  getRoom(){
+    const endpoint = `rooms/${this.state.roomName}`;
     this.ref = base.syncState(endpoint, {
       context: this,
-      asArray: true,
-      state: 'votes',
+      state: 'room',
       then() {
         this.setState({ 
           loading: false
         });
+        this.calcVotes();
       }
     });
   }
-
-  componentWillUnmount() {
-    base.removeBinding(this.ref);
+  calcVotes() {
+    const state = this.state;
+    const length = Object.keys(state.playerNames).length;
+    for (let i = 0; i < length; i++) {
+      const player = 'player' + i;
+      const score = Object.keys(state.room[state.playerNames[player]]).length;
+      const playerScores = {...this.state.playerScores};
+      playerScores[player] = score;
+      this.setState({
+        playerScores
+      });
+    }
   }
-  handleVote(index) {
-    const votes = [...this.state.votes];
-    votes[index]++;
+  handleVote(key) {
     this.setState({
-      votes: votes,
       disabledButtons: true
     });
   }
+  // componentWillUnmount() {
+  //   base.removeBinding(this.ref);
+  // }
   render() {
     return (
       <div>
@@ -59,14 +101,15 @@ export default class App extends React.Component {
           {this.state.loading === true
             ? <h3> LOADING... </h3>
             : <div>
-                <div>{this.state.votes[0]}</div>
-                <div>{this.state.votes[1]}</div>
+                {Object.keys(this.state.playerNames).map((key, index) => (
+                  <div key={key}>{`${this.state.playerNames[key]}: ${this.state.playerScores[key]}`}</div>
+                ))}
               </div>}
-          {Object.keys(this.state.votes).map((key, index) => (
+          {Object.keys(this.state.playerNames).map((key, index) => (
             <Button
               key={key}
               index={index}
-              handleVote={this.handleVote.bind(this, index)}
+              handleVote={this.handleVote.bind(this, key)}
               disabled={this.state.disabledButtons}
             />
           ))}
