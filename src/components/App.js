@@ -2,7 +2,7 @@ import React from 'react';
 import Button from './Button';
 import base from './../db';
 import deepKeys from 'deep-keys';
-
+import logo from './../images/delete-logo.svg';
 
 export default class App extends React.Component {
   constructor(props) {
@@ -145,24 +145,29 @@ export default class App extends React.Component {
   // }
   render() {
     return (
-      <div>
-        <h3> Vote for best Player </h3>
+      <div className="client">
+        <img className="logo" src={logo} />
+        <h3 className="client__subtitle">Code in the dark challenge</h3>
+        <h3 className="client__title">Vote for somebody:</h3>
           {this.state.loading === true
-            ? <h3> LOADING... </h3>
-            : <div>
+            ? <h3 className="client__loading"> LOADING... </h3>
+            : <div className="client__results">
                 {Object.keys(this.state.playerNames).map((key, index) => (
-                  <div key={key}>{`${this.state.playerNames[key]}: ${this.state.playerScores[key]}`}</div>
+                  <div className="client__results-item" key={key}>{`${this.state.playerNames[key]}: ${this.state.playerScores[key]}`}</div>
                 ))}
               </div>}
-          {Object.keys(this.state.playerNames).map((key, index) => (
-            <Button
-              key={key}
-              index={index}
-              handleVote={this.handleVote.bind(this, key)}
-              disabled={this.state.disabledButtons}
-              playerName={this.state.playerNames[key]}
-            />
-          ))}
+              <div className="client__buttons-wrapper">
+                {Object.keys(this.state.playerNames).map((key, index) => (
+                  <Button
+                    className="client__button"
+                    key={key}
+                    index={index}
+                    handleVote={this.handleVote.bind(this, key)}
+                    disabled={this.state.disabledButtons}
+                    playerName={this.state.playerNames[key]}
+                  />
+                ))}
+              </div>
       </div>
     );
   }

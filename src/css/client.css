@@ -1,0 +1,43 @@
+body {
+    background: black;
+    color: white;
+    margin: 10vh 10vw;
+}
+.logo {
+}
+.client__subtitle {
+    font-size: 6vw;
+    margin: 0;
+    margin-bottom: 10vh;
+}
+.client__title {
+    font-size: 8vw;
+    margin: 0;
+}
+.client__results {
+    display: flex;
+    margin-top: 5vh;
+}
+.client__results-item {
+    flex: 1;
+    font-size: 6vw;
+}
+.client__results-item:first-child {
+    margin-right: 10vw;
+}
+.client__buttons-wrapper {
+    display: flex;
+    margin-top: 5vh;
+}
+.client__button {
+    flex: 1;
+    background: white;
+    height: 10vh;
+    font-size: 6vw;
+}
+.client__button:first-child {
+    margin-right: 10vw;
+}
+.client__button:disabled {
+    opacity: 0.5;
+}
