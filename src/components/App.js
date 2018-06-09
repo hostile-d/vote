@@ -90,6 +90,7 @@ export default class App extends React.Component {
   calcVotes() {
     const state = this.state;
     const length = Object.keys(state.playerNames).length;
+    const playerScores = {...this.state.playerScores};
     for (let i = 0; i < length; i++) {
       const player = 'player' + i;
       const votes = state.room[state.playerNames[player]];
@@ -97,7 +98,6 @@ export default class App extends React.Component {
       for(let key in votes) {
         if (key === 'initVote') score--;
       }
-      const playerScores = {...this.state.playerScores};
       playerScores[player] = score;
       this.setState({
         playerScores
@@ -135,7 +135,12 @@ export default class App extends React.Component {
       base.fetch('settings/roomKey', {
         context: this,
         then(data){
-          if(this.state.roomKey !== data) window.location = '/';
+          if(this.state.roomKey !== data) {
+            window.location = '/'
+            this.setState({
+              disabledButtons: false
+            });
+          };
         }
       })
     }, 2000)
