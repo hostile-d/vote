@@ -11,7 +11,12 @@ export default class Admin extends React.Component {
       playerNames: {
         player0: '',
         player1: ''
-      }
+      },
+      playerScores: {
+        player0: 0,
+        player1: 0
+      },
+      room: {}
     };
   }
   componentDidMount() {
@@ -30,6 +35,23 @@ export default class Admin extends React.Component {
   }
   componentWillUnmount() {
     base.removeBinding(this.ref);
+  }
+  calcVotes() {
+    const state = this.state;
+    const length = Object.keys(state.playerNames).length;
+    const playerScores = {...this.state.playerScores};
+    for (let i = 0; i < length; i++) {
+      const player = 'player' + i;
+      const votes = state.room[state.playerNames[player]];
+      let score = Object.keys(votes).length;
+      for(let key in votes) {
+        if (key === 'initVote') score--;
+      }
+      playerScores[player] = score;
+      this.setState({
+        playerScores
+      });
+    }
   }
   handleSubmit = (e) => {
     e.preventDefault();

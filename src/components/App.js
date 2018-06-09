@@ -156,9 +156,9 @@ export default class App extends React.Component {
           {this.state.loading === true
             ? <h3 className="client__loading"> LOADING... </h3>
             : <div className="client__results">
-                {Object.keys(this.state.playerNames).map((key, index) => (
+                {/* {Object.keys(this.state.playerNames).map((key, index) => (
                   <div className="client__results-item" key={key}>{`${this.state.playerNames[key]}: ${this.state.playerScores[key]}`}</div>
-                ))}
+                ))} */}
               </div>}
               <div className="client__buttons-wrapper">
                 {Object.keys(this.state.playerNames).map((key, index) => (
