@@ -67,14 +67,15 @@ export default class App extends React.Component {
     const p1 = this.state.playerNames.player0;
     const p2 = this.state.playerNames.player1;
     const roomName = `${p1}-${p2}`;
+    
     this.setState({
       roomName
     });
     this.getRoom();
   }
   getRoom(){
-    const endpoint = `rooms/${this.state.roomKey}/${this.state.roomName}`;
-    this.ref = base.syncState(endpoint, {
+    let endpoint = `rooms/${this.state.roomKey}/${this.state.roomName}`;
+    base.syncState(endpoint, {
       context: this,
       state: 'room',
       then() {
@@ -86,6 +87,20 @@ export default class App extends React.Component {
         this.pingDb();
       }
     });
+  }
+  pingDb() {
+    base.listenTo('settings/roomKey', {
+      context: this,
+      then(prevKey){
+        if(localStorage.getItem('prevRoomKey') !== prevKey) {
+          this.setState({
+            disabledButtons: false
+          })
+          window.location = '/';
+        }
+        localStorage.setItem('prevRoomKey', prevKey);
+      }
+    })
   }
   calcVotes() {
     const state = this.state;
@@ -128,22 +143,6 @@ export default class App extends React.Component {
       disabledButtons: true
     });
     this.calcVotes();
-  }
-
-  pingDb() {
-    setInterval(() => {
-      base.fetch('settings/roomKey', {
-        context: this,
-        then(data){
-          if(this.state.roomKey !== data) {
-            window.location = '/'
-            this.setState({
-              disabledButtons: false
-            });
-          };
-        }
-      })
-    }, 2000)
   }
   // componentWillUnmount() {
   //   base.removeBinding(this.ref);
